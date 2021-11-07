@@ -57,7 +57,7 @@ def threshold_image(image, threshold_value):
         for y in range(len(image[0])):
             if image[x][y] < threshold_value:
                 image[x][y] = 0.0
-    return normalize(sobel_image, sobel_image, 0, 1, NORM_MINMAX, CV_32F)
+    return normalize(image, image, 0, 1, NORM_MINMAX, CV_32F)
 
 
 def lower_resolution(image, size):
@@ -66,11 +66,39 @@ def lower_resolution(image, size):
     return np.reshape(image, (HEIGHT, WIDTH))
 
 
+def find_centres(image, size):
+    image = image[tf.newaxis, :, :, tf.newaxis]
+    filter_matrix = np.zeros((size, size))
+    for x in range(len(filter_matrix)):
+        for y in range(len(filter_matrix[0])):
+            if x == 0 or y == 0 or x == size - 1 or y == size - 1:
+                filter_matrix[x][y] = 1
+    filter_matrix = filter_matrix[:, :, tf.newaxis, tf.newaxis]
+    image = tf.nn.conv2d_transpose(image, filter_matrix, strides=1, padding='SAME', output_shape=(HEIGHT, WIDTH))
+    image = np.reshape(image, (HEIGHT, WIDTH))
+    return normalize(image, image, 0, 1, NORM_MINMAX, CV_32F)
+
+
 gray_image = preprocess_image('pipes.jpg')
 blurred_image = gaussian_blur(gray_image, get_gaussian_kernel(5))
 sobel_image = combine_sobel_x_y(sobel_filter(blurred_image, SOBEL_X), sobel_filter(blurred_image, SOBEL_Y))
-sobel_image = threshold_image(sobel_image, 1)
-# sobel_image = lower_resolution(sobel_image, 4)
-imshow('pipes', sobel_image)
-waitKey(0)
+sobel_image = threshold_image(sobel_image, 0.8)
+sobel_image = lower_resolution(sobel_image, 16)
+
+centers = []
+for i in range(7, 17, 2):
+    centers.append(find_centres(sobel_image, i))
+
+for i in range(len(centers)):
+    centers[i] = threshold_image(centers[i], 0.5)
+
+counter = 7
+for i in range(len(centers)):
+    centers[i] = find_centres(centers[i], counter)
+    counter = counter + 2
+
+for i in centers:
+    imshow('pipes', i)
+    waitKey(0)
+
 destroyAllWindows()
