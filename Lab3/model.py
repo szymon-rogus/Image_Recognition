@@ -43,7 +43,7 @@ class CfModel:
         self.model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     def fit(self, x_train, y_train_vector, x_test, y_test_vector):
-        return self.model.fit(x_train, y_train_vector, epochs=10, batch_size=64, validation_data=(x_test, y_test_vector))
+        return self.model.fit(x_train, y_train_vector, epochs=50, batch_size=64, validation_data=(x_test, y_test_vector))
 
     def predict(self, dataset):
         return self.model.predict(dataset)

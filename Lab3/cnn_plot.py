@@ -1,10 +1,7 @@
-import numpy as np
 from numpy import load
 import matplotlib.pyplot as plt
 
-history = load('history7.npy', allow_pickle=True).item()
-
-print(history)
+history = load('history8.npy', allow_pickle=True).item()
 
 plt.plot(history['accuracy'], label='accuracy')
 plt.plot(history['val_accuracy'], label='val_accuracy')

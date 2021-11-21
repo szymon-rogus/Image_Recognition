@@ -1,10 +1,7 @@
 import numpy as np
 import tensorflow.keras.datasets.cifar10 as cf10
-from tensorflow.keras import models
 from model import CfModel
 from numpy import save
-import tensorflow as tf
-from cv2.cv2 import *
 
 
 def assert_dataset(train, test, train_label, test_label):
@@ -47,6 +44,5 @@ model.get_summary()
 history = model.fit(x_train, y_train_vector, x_test, y_test_vector)
 model.save_model('my_model4.h5')
 save('history8', history.history)
-# model = models.load_model('my_model3.h5')
 
 test_cnn(model, x_test, y_test, y_test_vector)
