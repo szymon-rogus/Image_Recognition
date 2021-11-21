@@ -2,7 +2,7 @@ import numpy as np
 from numpy import load
 import matplotlib.pyplot as plt
 
-history = load('history.npy', allow_pickle=True).item()
+history = load('history7.npy', allow_pickle=True).item()
 
 print(history)
 
